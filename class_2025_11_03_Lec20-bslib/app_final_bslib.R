@@ -37,7 +37,7 @@ ui = page_sidebar(
 )
 
 server = function(input, output, session) {
-  bs_themer()
+  #bs_themer()
   
   output$summary_title = renderText({
     paste(input$summary_dist, "summary statistics") |>
@@ -111,21 +111,21 @@ server = function(input, output, session) {
   })
   
   output$plot = renderPlot({      
-    ggplot(d(), aes(x=p, y=density, color=distribution)) +
+    current_theme = bs_current_theme()
+    
+    dist_colors = bs_get_variables(current_theme, c("danger", "success", "primary")) |>
+      setNames(c("prior", "likelihood", "posterior"))
+    
+    ggplot(
+      d(),
+      aes(x=p, y=density, color=distribution)
+    ) +
       geom_line(linewidth=1.5) +
-      geom_ribbon(aes(ymax=density, fill=distribution), ymin=0, alpha=0.5)
+      geom_ribbon(aes(ymax=density, fill=distribution), ymin=0, alpha=0.5) +
+      scale_color_manual(values = dist_colors) +
+      scale_fill_manual(values = dist_colors)
   })
-  
-  output$table = renderTable({
-    d() |>
-    group_by(distribution) |>
-    summarize(
-      mean = sum(p * density) / n(),
-      median = p[(cumsum(density/n()) >= 0.5)][1],
-      q025 = p[(cumsum(density/n()) >= 0.025)][1],
-      q975 = p[(cumsum(density/n()) >= 0.975)][1]
-    )
-  })
+
 }
 
 thematic::thematic_shiny()
