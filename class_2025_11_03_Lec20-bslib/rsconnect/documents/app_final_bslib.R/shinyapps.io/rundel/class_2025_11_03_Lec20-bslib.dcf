@@ -1,0 +1,13 @@
+name: class_2025_11_03_Lec20-bslib
+title: class_2025_11_03_Lec20-bslib
+username: rundel
+account: rundel
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15948298
+bundleId: 11124678
+url: https://rundel.shinyapps.io/class_2025_11_03_Lec20-bslib/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: app_0_initial.R|app_1_bslib.R|app_2_bslib.R
