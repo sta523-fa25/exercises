@@ -4,7 +4,7 @@ library(tidymodels)
 penguins = palmerpenguins::penguins |>
   select(species, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, sex) |>
   drop_na()
-  
+
 set.seed(123)
 penguin_split = initial_split(penguins, prop = 0.8, strata = species)
 penguin_train = training(penguin_split)
@@ -24,61 +24,25 @@ penguin_wf = workflow() |>
 
 penguin_fit = fit(penguin_wf, data = penguin_train)
 
-
-
-#* Return basic model info
+#* Return model summary as text
 #* @get /model
 #* @serializer text
-#* 
 function() {
-  capture.output(print(penguin_fit)) |>
-    paste(collapse="\n")
+  out = capture.output(print(penguin_fit))
+  paste(out, collapse = "\n")
 }
 
-#* Model coefficients
+#* Return model tidy
 #* @get /model/tidy
-#* 
 function() {
   tidy(penguin_fit)
 }
 
-#* Model stats
+#* Return model glance
 #* @get /model/glance
-#* 
 function() {
   glance(penguin_fit)
 }
-
-
-#* Scatter plot of training data
-#* @param x:string Variable for x-axis
-#* @param y:string Variable for y-axis
-#* @get /plot/<x>/<y>
-#* @serializer png
-function(x, y) {
-  penguin_train |>
-    ggplot(
-      aes(x = .data[[x]], y = .data[[y]], color = species)
-    ) +
-    geom_point() +
-    theme_minimal()
-}
-
-#* Return training data
-#* @get /data/train
-#*
-function() {
-  penguin_train
-}
-
-#* Return testing data
-#* @get /data/test
-#*
-function() {
-  penguin_test
-}
-
-
 
 #* Predict penguin species (single)
 #* @query bill_length_mm:number Bill length in mm
@@ -117,7 +81,29 @@ function(body) {
 }
 
 
+#* Get training data
+#* @get /data/train
+function() {
+  penguin_train
+}
 
+#* Get testing data
+#* @get /data/test
+function() {
+  penguin_test
+}
 
-
+#* Scatter plot of training data
+#* @param x:string Variable for x-axis
+#* @param y:string Variable for y-axis
+#* @get /plot/<x>/<y>
+#* @serializer png
+function(x, y) {
+  penguin_train |>
+    ggplot(
+      aes(x = .data[[x]], y = .data[[y]], color = species)
+    ) +
+    geom_point() +
+    theme_minimal()
+}
 

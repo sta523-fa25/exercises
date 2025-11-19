@@ -1,7 +1,7 @@
 library(httr2)
 library(tidyverse)
 
-url = "http://127.0.0.1:8080"
+url = "http://127.0.0.1:8123"
 
 test_data = request(url) |>
   req_url_path_append("data", "test") |>
